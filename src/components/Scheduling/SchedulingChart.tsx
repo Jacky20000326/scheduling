@@ -8,7 +8,7 @@ import {
   TIME_SLOTS,
   toTimeInputValue,
 } from "../utils";
-import { SLOT_STEP, SLOT_WIDTH_PX } from "../constants";
+import { ROLE_COLOR_OVERRIDES, SLOT_STEP, SLOT_WIDTH_PX } from "../constants";
 import { UseFormClearErrors, UseFormReset } from "react-hook-form";
 
 type CellStatus = "off" | "break" | "work";
@@ -69,7 +69,7 @@ export const SchedulingChart = ({
       handleCancelEdit();
     }
   };
-
+  console.log(employees);
   const handleEditClick = (employee: Employee) => {
     setEditingId(employee.id);
     reset({
@@ -136,7 +136,7 @@ export const SchedulingChart = ({
           <div className="chart__label chart__label--header">員工</div>
           <div className="chart__hours-container chart__hours-container--header">
             <div className="chart__hours" style={hoursGridStyle}>
-              {employees.length &&
+              {!!employees.length &&
                 TIME_SLOTS.map((slot) => (
                   <div key={slot} className="chart__hour">
                     {formatHourLabel(slot)}
@@ -153,7 +153,6 @@ export const SchedulingChart = ({
             {employees.map((employee) => {
               const workHours = calculateWorkHours(employee);
               const workHoursLabel = formatWorkDuration(workHours);
-
               return (
                 <div key={employee.id} className="chart__row">
                   <div className="chart__label">
@@ -190,7 +189,7 @@ export const SchedulingChart = ({
                     {TIME_SLOTS.map((slot) => {
                       const status = renderCell(employee, slot);
                       const cellStyle = {
-                        "--cell-color": employee.color,
+                        "--cell-color": ROLE_COLOR_OVERRIDES[employee.color],
                       } as CSSProperties;
                       return (
                         <div
@@ -219,22 +218,20 @@ export const SchedulingChart = ({
         </div>
       )}
 
-      {legendItems.length > 0 && (
-        <div className="legend">
-          <h3>工作項目顏色對應</h3>
-          <ul>
-            {legendItems.map((item) => (
-              <li key={item.role}>
-                <span
-                  className="legend__swatch"
-                  style={{ backgroundColor: item.color }}
-                />
-                <span>{item.role}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="legend">
+        <h3>工作項目顏色對應</h3>
+        <ul>
+          {Object.entries(ROLE_COLOR_OVERRIDES).map(([role, color]) => (
+            <li key={role}>
+              <span
+                className="legend__swatch"
+                style={{ backgroundColor: color }}
+              />
+              <span>{role}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 };

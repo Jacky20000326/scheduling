@@ -43,7 +43,10 @@ function App() {
     const isEditing = Boolean(editingId);
 
     if (!isEditing && employees.length >= 15) {
-      setError("root", { type: "manual", message: "已達 15 位員工的上限。" });
+      setError("root", {
+        type: "manual",
+        message: "已達 15 位員工的上限。",
+      });
       return;
     }
 

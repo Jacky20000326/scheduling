@@ -21,7 +21,12 @@ export const COLOR_PALETTE = [
   "#22D3EE",
 ];
 
-export const ROLE_COLOR_OVERRIDES = {
+export const ROLE_COLOR_OVERRIDES: Record<string, string> = {
   菜口: "#1d4ed8",
   跑菜: "#60a5fa",
+  客服: "#FB7185",
+  內場: "#D946EF",
+  外場: "#E11D48",
 };
+const obj = { foo: "bar", baz: 42 };
+console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]
