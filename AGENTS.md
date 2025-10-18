@@ -1,10 +1,10 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Root entry: `index.html` (Vite). Build config in `vite.config.js`.
+- Root entry: `index.html` (Vite). Build config in `vite.config.ts`.
 - App code lives in `src/`:
-  - `src/App.jsx` – main UI component.
-  - `src/main.jsx` – bootstraps React and mounts the app.
+  - `src/App.tsx` – main UI component.
+  - `src/main.tsx` – bootstraps React and mounts the app.
   - `src/index.css` – global styles.
 - Build output: `dist/` (generated). Do not edit by hand.
 - Docs: `README.md` describes usage at a glance.
@@ -18,9 +18,9 @@
 ## Coding Style & Naming Conventions
 - Language: React 18 with ES Modules.
 - Indentation: 2 spaces; keep lines concise and focused.
-- Components: PascalCase (e.g., `ShiftTable.jsx`, `ScheduleView.jsx`).
+- Components: PascalCase (e.g., `ShiftTable.tsx`, `ScheduleView.tsx`).
 - Hooks/utilities: camelCase (e.g., `useShiftStore`, `formatDate`).
-- File naming: `*.jsx` for React components; colocate small component styles; keep global rules in `src/index.css`.
+- File naming: `*.tsx` for React components; colocate small component styles; keep global rules in `src/index.css`.
 - Imports: absolute within `src/` only if configured; otherwise use relative paths.
 - No linters configured yet—match existing style and keep diffs minimal.
 
@@ -28,7 +28,7 @@
 - Test tooling is not configured in this repo.
 - If adding tests, prefer Vitest + React Testing Library.
   - Location: `src/__tests__/`
-  - Naming: `*.test.jsx` (e.g., `App.test.jsx`).
+  - Naming: `*.test.tsx` (e.g., `App.test.tsx`).
   - Focus on rendering, props, and user flows.
 
 ## Commit & Pull Request Guidelines
@@ -45,4 +45,3 @@
 - Keep secrets out of the repo; use environment variables if introduced later.
 - Avoid using `eval`/dangerous DOM APIs. Sanitize any dynamic HTML.
 - Validate date/time inputs for scheduling to prevent edge‑case crashes.
-
