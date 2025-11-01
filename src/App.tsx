@@ -39,7 +39,6 @@ function App() {
 
   const onSubmit: SubmitHandler<EmployeeFormValues> = (form) => {
     clearErrors();
-
     const isEditing = Boolean(editingId);
 
     if (!isEditing && employees.length >= 15) {
@@ -65,45 +64,6 @@ function App() {
       setError("shiftEnd", {
         type: "manual",
         message: "請輸入完整的上班時段。",
-      });
-      return;
-    }
-
-    if (shiftStart < WORK_START || shiftEnd > WORK_END) {
-      if (shiftStart < WORK_START) {
-        setError("shiftStart", {
-          type: "manual",
-          message: "上班時間需介於 10:00 ~ 23:00。",
-        });
-      }
-      if (shiftEnd > WORK_END) {
-        setError("shiftEnd", {
-          type: "manual",
-          message: "上班時間需介於 10:00 ~ 23:00。",
-        });
-      }
-      return;
-    }
-
-    if (shiftStart >= shiftEnd) {
-      setError("shiftEnd", {
-        type: "manual",
-        message: "上班開始時間需早於結束時間。",
-      });
-      return;
-    }
-
-    if (
-      (breakStart !== null && breakEnd === null) ||
-      (breakStart === null && breakEnd !== null)
-    ) {
-      setError("breakStart", {
-        type: "manual",
-        message: "請輸入完整的休息起迄時間，或全部留空。",
-      });
-      setError("breakEnd", {
-        type: "manual",
-        message: "請輸入完整的休息起迄時間，或全部留空。",
       });
       return;
     }

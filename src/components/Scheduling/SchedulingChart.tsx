@@ -69,7 +69,6 @@ export const SchedulingChart = ({
       handleCancelEdit();
     }
   };
-  console.log(employees);
   const handleEditClick = (employee: Employee) => {
     setEditingId(employee.id);
     reset({

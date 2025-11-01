@@ -9,6 +9,11 @@
   box-sizing: border-box;
 }
 
+label {
+  font-weight: 600;
+  font-size: 15px;
+}
+
 body {
   margin: 0;
 }
@@ -48,7 +53,7 @@ body {
 .panel h2,
 .legend h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .panel--stretch {
@@ -112,12 +117,12 @@ body {
 }
 
 .form__submit {
-  padding: 12px;
+  padding: 5px 10px;
   border: none;
-  border-radius: 999px;
+  border-radius: 4px;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: #ffffff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;

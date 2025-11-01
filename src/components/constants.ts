@@ -29,4 +29,12 @@ export const ROLE_COLOR_OVERRIDES: Record<string, string> = {
   外場: "#E11D48",
 };
 const obj = { foo: "bar", baz: 42 };
-console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]
+
+export const FROM_REGISTER_NAME = {
+  NAME: "name",
+  ROLE: "role",
+  SHIFT_START: "shiftStart",
+  SHIFT_END: "shiftEnd",
+  BREAK_START: "breakStart",
+  BREAK_END: "breakEnd",
+} as const;
