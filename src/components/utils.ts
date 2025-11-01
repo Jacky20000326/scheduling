@@ -1,11 +1,5 @@
 import { WORK_END, WORK_START, SLOT_STEP } from "./constants";
-
-type HasSchedule = {
-  shiftStart: number;
-  shiftEnd: number;
-  breakStart: number | null;
-  breakEnd: number | null;
-};
+import type { Employee } from "./types";
 
 export const overlaps = (
   startA: number,
@@ -52,13 +46,18 @@ export const isHalfHour = (value: string): boolean => {
   return mm === 0 || mm === 30;
 };
 
-export const calculateWorkHours = (employee: HasSchedule): number => {
-  const totalShift = employee.shiftEnd - employee.shiftStart;
-  const breakDuration =
-    employee.breakStart !== null && employee.breakEnd !== null
-      ? employee.breakEnd - employee.breakStart
-      : 0;
-  return totalShift - breakDuration;
+export const calculateWorkHours = (employee: Employee): number => {
+  let total = 0;
+
+  if (employee.shift1) {
+    total += employee.shift1.shiftEnd - employee.shift1.shiftStart;
+  }
+
+  if (employee.shift2) {
+    total += employee.shift2.shiftEnd - employee.shift2.shiftStart;
+  }
+
+  return total;
 };
 
 export const formatWorkDuration = (value: number): string => {
@@ -75,3 +74,5 @@ export const TIME_SLOTS: number[] = Array.from(
   { length: Math.round((WORK_END - WORK_START) / SLOT_STEP) },
   (_, index) => WORK_START + index * SLOT_STEP
 );
+
+console.log(TIME_SLOTS);

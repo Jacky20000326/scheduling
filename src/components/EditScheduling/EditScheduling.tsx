@@ -9,7 +9,7 @@ import {
   type UseFormRegister,
 } from "react-hook-form";
 
-import { isHalfHour, toTimeInputValue } from "../utils";
+import { isHalfHour } from "../utils";
 import { FROM_REGISTER_NAME } from "../constants";
 import { EmployeeFormValues } from "../types";
 
@@ -34,9 +34,9 @@ export const EditScheduling = ({
   editingId,
   handleCancelEdit,
 }: EditEmployeeProps) => {
-  const [shiftStart, shiftEnd] = useWatch({
+  const [shift1Start, shift1End, shift2Start, shift2End] = useWatch({
     control,
-    name: ["shiftStart", "shiftEnd"],
+    name: ["shift1Start", "shift1End", "shift2Start", "shift2End"],
   });
   return (
     <section className="panel">
@@ -62,66 +62,61 @@ export const EditScheduling = ({
         </div>
         <div className={styles.formLayerTitle}>---- 第一段班 ----</div>
         <div className="form__row">
-          <label htmlFor={FROM_REGISTER_NAME.ROLE}>工作項目</label>
+          <label htmlFor={FROM_REGISTER_NAME.SHIFT1_ROLE}>工作項目</label>
           <select
-            id={FROM_REGISTER_NAME.ROLE}
-            aria-invalid={errors.role ? "true" : "false"}
-            {...register(FROM_REGISTER_NAME.ROLE, {
-              required: "請輸入工作項目。",
-              validate: (value) => value.trim() !== "" || "請輸入工作項目。",
-            })}
+            id={FROM_REGISTER_NAME.SHIFT1_ROLE}
+            aria-invalid={errors.shift1Role ? "true" : "false"}
+            {...register(FROM_REGISTER_NAME.SHIFT1_ROLE)}
           >
-            <option value="" disabled>
-              請選擇工作項目
-            </option>
+            <option value="">請選擇工作項目</option>
             {ROLE_OPTIONS.map((role) => (
               <option key={role} value={role}>
                 {role}
               </option>
             ))}
           </select>
-          {errors.role && (
+          {errors.shift1Role && (
             <p className="form__error" role="alert">
-              {errors.role.message}
+              {errors.shift1Role.message}
             </p>
           )}
         </div>
 
         <div className="form__grid">
           <div className="form__row">
-            <label htmlFor="shiftStart">上班開始</label>
+            <label htmlFor={FROM_REGISTER_NAME.SHIFT1_START}>上班開始</label>
             <input
-              id="shiftStart"
+              id={FROM_REGISTER_NAME.SHIFT1_START}
               type="time"
-              value={shiftStart}
-              aria-invalid={errors.shiftStart ? "true" : "false"}
-              {...register("shiftStart", {
-                required: "請輸入時段。",
+              value={shift1Start}
+              aria-invalid={errors.shift1Start ? "true" : "false"}
+              {...register(FROM_REGISTER_NAME.SHIFT1_START, {
+                validate: (value) =>
+                  !value || isHalfHour(value) || "分鐘僅能為 00 或 30。",
               })}
             />
-            {errors.shiftStart && (
+            {errors.shift1Start && (
               <p className="form__error" role="alert">
-                {errors.shiftStart.message}
+                {errors.shift1Start.message}
               </p>
             )}
           </div>
 
           <div className="form__row">
-            <label htmlFor="shiftEnd">上班結束</label>
+            <label htmlFor={FROM_REGISTER_NAME.SHIFT1_END}>上班結束</label>
             <input
-              id="shiftEnd"
+              id={FROM_REGISTER_NAME.SHIFT1_END}
               type="time"
-              value={shiftEnd}
-              aria-invalid={errors.shiftEnd ? "true" : "false"}
-              {...register("shiftEnd", {
-                required: "請輸入時段。",
+              value={shift1End}
+              aria-invalid={errors.shift1End ? "true" : "false"}
+              {...register(FROM_REGISTER_NAME.SHIFT1_END, {
                 validate: (value) =>
-                  isHalfHour(value) || "分鐘僅能為 00 或 30。",
+                  !value || isHalfHour(value) || "分鐘僅能為 00 或 30。",
               })}
             />
-            {errors.shiftEnd && (
+            {errors.shift1End && (
               <p className="form__error" role="alert">
-                {errors.shiftEnd.message}
+                {errors.shift1End.message}
               </p>
             )}
           </div>
@@ -130,64 +125,60 @@ export const EditScheduling = ({
         {/* 第二段班 */}
         <div className={styles.formLayerTitle}>---- 第二段班 ----</div>
         <div className="form__row">
-          <label htmlFor={FROM_REGISTER_NAME.ROLE}>工作項目</label>
+          <label htmlFor={FROM_REGISTER_NAME.SHIFT2_ROLE}>工作項目</label>
           <select
-            id={FROM_REGISTER_NAME.ROLE}
-            aria-invalid={errors.role ? "true" : "false"}
-            {...register(FROM_REGISTER_NAME.ROLE, {
-              required: "請輸入工作項目。",
-              validate: (value) => value.trim() !== "" || "請輸入工作項目。",
-            })}
+            id={FROM_REGISTER_NAME.SHIFT2_ROLE}
+            aria-invalid={errors.shift2Role ? "true" : "false"}
+            {...register(FROM_REGISTER_NAME.SHIFT2_ROLE)}
           >
-            <option value="" disabled>
-              請選擇工作項目
-            </option>
+            <option value="">請選擇工作項目</option>
             {ROLE_OPTIONS.map((role) => (
               <option key={role} value={role}>
                 {role}
               </option>
             ))}
           </select>
-          {errors.role && (
+          {errors.shift2Role && (
             <p className="form__error" role="alert">
-              {errors.role.message}
+              {errors.shift2Role.message}
             </p>
           )}
         </div>
         <div className="form__grid">
           <div className="form__row">
-            <label htmlFor="shiftStart">上班開始</label>
+            <label htmlFor={FROM_REGISTER_NAME.SHIFT2_START}>上班開始</label>
             <input
-              id="shiftStart"
+              id={FROM_REGISTER_NAME.SHIFT2_START}
               type="time"
-              value={shiftStart}
-              aria-invalid={errors.shiftStart ? "true" : "false"}
-              {...register("shiftStart", {
-                required: "請輸入時段。",
+              value={shift2Start}
+              aria-invalid={errors.shift2Start ? "true" : "false"}
+              {...register(FROM_REGISTER_NAME.SHIFT2_START, {
+                validate: (value) =>
+                  !value || isHalfHour(value) || "分鐘僅能為 00 或 30。",
               })}
             />
-            {errors.shiftStart && (
+            {errors.shift2Start && (
               <p className="form__error" role="alert">
-                {errors.shiftStart.message}
+                {errors.shift2Start.message}
               </p>
             )}
           </div>
+
           <div className="form__row">
-            <label htmlFor="shiftEnd">上班結束</label>
+            <label htmlFor={FROM_REGISTER_NAME.SHIFT2_END}>上班結束</label>
             <input
-              id="shiftEnd"
+              id={FROM_REGISTER_NAME.SHIFT2_END}
               type="time"
-              value={shiftEnd}
-              aria-invalid={errors.shiftEnd ? "true" : "false"}
-              {...register("shiftEnd", {
-                required: "請輸入時段。",
+              value={shift2End}
+              aria-invalid={errors.shift2End ? "true" : "false"}
+              {...register(FROM_REGISTER_NAME.SHIFT2_END, {
                 validate: (value) =>
-                  isHalfHour(value) || "分鐘僅能為 00 或 30。",
+                  !value || isHalfHour(value) || "分鐘僅能為 00 或 30。",
               })}
             />
-            {errors.shiftEnd && (
+            {errors.shift2End && (
               <p className="form__error" role="alert">
-                {errors.shiftEnd.message}
+                {errors.shift2End.message}
               </p>
             )}
           </div>
@@ -210,8 +201,8 @@ export const EditScheduling = ({
       </form>
 
       <p className="form__hint">
-        最多可新增 15 位員工。上班與休息時段需介於 10:00 ~
-        23:00，休息時間可留空。
+        最多可新增 15 位員工。每段班次時段需介於 10:00 ~
+        23:00，至少需要填寫一段班次。
       </p>
     </section>
   );
