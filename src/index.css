@@ -112,9 +112,10 @@ body {
 }
 
 .form__submit {
-  padding: 12px;
+  padding: 10px;
+  width: 100%;
   border: none;
-  border-radius: 999px;
+  border-radius: 4px;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: #ffffff;
   font-size: 15px;

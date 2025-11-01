@@ -69,7 +69,6 @@ export const SchedulingChart = ({
       handleCancelEdit();
     }
   };
-  console.log(employees);
   const handleEditClick = (employee: Employee) => {
     setEditingId(employee.id);
     reset({
@@ -107,11 +106,6 @@ export const SchedulingChart = ({
 
     return "work";
   };
-
-  const legendItems = useMemo<LegendItem[]>(
-    () => Object.entries(roleColors).map(([role, color]) => ({ role, color })),
-    [roleColors]
-  );
 
   const hoursGridStyle = useMemo<CSSProperties>(
     () => ({

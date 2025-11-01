@@ -10,6 +10,7 @@ import { toHourFloat } from "./components/utils";
 import { EditScheduling } from "./components/EditScheduling/EditScheduling";
 import { SchedulingChart } from "./components/Scheduling/SchedulingChart";
 import { Employee, EmployeeFormValues } from "./components/types";
+import { insertScheduleTable } from "./supabase/utils";
 
 function App() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -37,7 +38,7 @@ function App() {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<EmployeeFormValues> = (form) => {
+  const onSubmit: SubmitHandler<EmployeeFormValues> = async (form) => {
     clearErrors();
 
     const isEditing = Boolean(editingId);
@@ -209,6 +210,8 @@ function App() {
       setEmployees((prev) => [...prev, newEmployee]);
     }
 
+    const data = await insertScheduleTable(form);
+    console.log(data);
     reset();
   };
 
@@ -250,4 +253,5 @@ function App() {
   );
 }
 
+export { App as SchedulingPage };
 export default App;
