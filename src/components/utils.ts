@@ -6,7 +6,12 @@ export const overlaps = (
   endA: number,
   startB: number,
   endB: number
-): boolean => Math.max(startA, startB) < Math.min(endA, endB);
+): boolean => {
+  if (endA === startB) {
+    return true;
+  }
+  return Math.max(startA, startB) < Math.min(endA, endB);
+};
 
 export const toHourFloat = (
   value: string | null | undefined
@@ -50,13 +55,22 @@ export const calculateWorkHours = (employee: Employee): number => {
   let total = 0;
 
   if (employee.shift1) {
-    total += employee.shift1.shiftEnd - employee.shift1.shiftStart;
+    const shift1Hours = employee.shift1.shiftEnd - employee.shift1.shiftStart;
+    console.log(
+      `員工 ${employee.name} 第一段班: ${employee.shift1.shiftStart} - ${employee.shift1.shiftEnd} = ${shift1Hours} 小時`
+    );
+    total += shift1Hours;
   }
 
   if (employee.shift2) {
-    total += employee.shift2.shiftEnd - employee.shift2.shiftStart;
+    const shift2Hours = employee.shift2.shiftEnd - employee.shift2.shiftStart;
+    console.log(
+      `員工 ${employee.name} 第二段班: ${employee.shift2.shiftStart} - ${employee.shift2.shiftEnd} = ${shift2Hours} 小時`
+    );
+    total += shift2Hours;
   }
 
+  console.log(`員工 ${employee.name} 總工時: ${total} 小時`);
   return total;
 };
 
@@ -74,5 +88,3 @@ export const TIME_SLOTS: number[] = Array.from(
   { length: Math.round((WORK_END - WORK_START) / SLOT_STEP) },
   (_, index) => WORK_START + index * SLOT_STEP
 );
-
-console.log(TIME_SLOTS);

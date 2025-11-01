@@ -142,60 +142,51 @@ export const SchedulingChart = ({
                           type="button"
                           className="chart__action chart__action--edit"
                           onClick={() => handleEditClick(employee)}
+                          title="編輯"
+                          aria-label="編輯員工"
                         >
-                          編輯
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
                         </button>
                         <button
                           type="button"
                           className="chart__action chart__action--delete"
                           onClick={() => handleDeleteClick(employee.id)}
+                          title="刪除"
+                          aria-label="刪除員工"
                         >
-                          刪除
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                          </svg>
                         </button>
                       </div>
                     </div>
-                    {employee.shift1 && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                      >
-                        <span
-                          style={{
-                            backgroundColor:
-                              ROLE_COLOR_OVERRIDES[employee.shift1.role],
-                            width: "10px",
-                            height: "10px",
-                          }}
-                        />
-                        <span className="chart__role">
-                          第一段班: {employee.shift1.role}
-                        </span>
-                      </div>
-                    )}
-                    {employee.shift2 && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                      >
-                        <span
-                          style={{
-                            backgroundColor:
-                              ROLE_COLOR_OVERRIDES[employee.shift2.role],
-                            width: "10px",
-                            height: "10px",
-                          }}
-                        />
-                        <span className="chart__role">
-                          第二段班: {employee.shift2.role}
-                        </span>
-                      </div>
-                    )}
+
                     <span className="chart__work-hours">
                       上班 {workHoursLabel}
                     </span>
@@ -215,7 +206,9 @@ export const SchedulingChart = ({
                           style={cellStyle}
                         >
                           <span className="chart__cell-label">
-                            {cellData.status === "work" ? "上班" : "休息"}
+                            {cellData.status === "work"
+                              ? cellData.role
+                              : "休息"}
                           </span>
                         </div>
                       );

@@ -34,7 +34,6 @@ function App() {
   const onSubmit: SubmitHandler<EmployeeFormValues> = (form) => {
     clearErrors();
     const isEditing = Boolean(editingId);
-    console.log(form);
     if (!isEditing && employees.length >= 15) {
       setError("root", {
         type: "manual",
@@ -45,31 +44,77 @@ function App() {
 
     const name = form.name.trim();
 
-    // Parse shift 1
-    const shift1 =
-      form.shift1Role && form.shift1Start && form.shift1End
-        ? {
-            role: form.shift1Role.trim(),
-            shiftStart: toHourFloat(form.shift1Start)!,
-            shiftEnd: toHourFloat(form.shift1End)!,
-          }
-        : null;
+    // 第一段班：根據工作項目判斷是否需要填寫
+    const hasShift1Role = form.shift1Role && form.shift1Role.trim() !== "";
 
-    // Parse shift 2
-    const shift2 =
-      form.shift2Role && form.shift2Start && form.shift2End
-        ? {
-            role: form.shift2Role.trim(),
-            shiftStart: toHourFloat(form.shift2Start)!,
-            shiftEnd: toHourFloat(form.shift2End)!,
-          }
-        : null;
+    if (hasShift1Role) {
+      // 如果選了工作項目，檢查時間是否完整
+      const hasShift1Start = form.shift1Start && form.shift1Start.trim() !== "";
+      const hasShift1End = form.shift1End && form.shift1End.trim() !== "";
 
-    // Validate at least one shift
+      if (!hasShift1Start) {
+        setError("shift1Start", {
+          type: "manual",
+          message: "請輸入第一段班的上班開始時間。",
+        });
+        return;
+      }
+      if (!hasShift1End) {
+        setError("shift1End", {
+          type: "manual",
+          message: "請輸入第一段班的上班結束時間。",
+        });
+        return;
+      }
+    }
+
+    // 第二段班：只根據工作項目判斷（時間有默認值，用戶不選工作項目就等於不填第二段班）
+    const hasShift2Role = form.shift2Role && form.shift2Role.trim() !== "";
+
+    if (hasShift2Role) {
+      // 如果選了工作項目，檢查時間是否完整
+      const hasShift2Start = form.shift2Start && form.shift2Start.trim() !== "";
+      const hasShift2End = form.shift2End && form.shift2End.trim() !== "";
+
+      if (!hasShift2Start) {
+        setError("shift2Start", {
+          type: "manual",
+          message: "請輸入第二段班的上班開始時間。",
+        });
+        return;
+      }
+      if (!hasShift2End) {
+        setError("shift2End", {
+          type: "manual",
+          message: "請輸入第二段班的上班結束時間。",
+        });
+        return;
+      }
+    }
+
+    // 解析第一段班（只有選了工作項目才解析）
+    const shift1 = hasShift1Role
+      ? {
+          role: form.shift1Role.trim(),
+          shiftStart: toHourFloat(form.shift1Start)!,
+          shiftEnd: toHourFloat(form.shift1End)!,
+        }
+      : null;
+
+    // 解析第二段班（只有選了工作項目才解析）
+    const shift2 = hasShift2Role
+      ? {
+          role: form.shift2Role.trim(),
+          shiftStart: toHourFloat(form.shift2Start)!,
+          shiftEnd: toHourFloat(form.shift2End)!,
+        }
+      : null;
+
+    // 驗證至少要有一段班次
     if (!shift1 && !shift2) {
       setError("root", {
         type: "manual",
-        message: "至少需要填寫一段班次。",
+        message: "至少需要選擇一段班次的工作項目。",
       });
       return;
     }
@@ -130,7 +175,15 @@ function App() {
       setEmployees((prev) => [...prev, newEmployee]);
     }
 
-    reset();
+    reset({
+      name: "",
+      shift1Role: "",
+      shift1Start: "10:00",
+      shift1End: "14:00",
+      shift2Role: "",
+      shift2Start: "17:00",
+      shift2End: "21:00",
+    });
   };
 
   const handleCancelEdit = () => {
@@ -142,7 +195,7 @@ function App() {
   return (
     <div className="app">
       <header className="app__header">
-        <h1>排班長條圖</h1>
+        <h1>文迪大老闆專用排班工具</h1>
         <p>新增員工的上班與休息時段，快速掌握誰正在工作或休息。</p>
       </header>
       <main className="layout">
