@@ -1,18 +1,17 @@
 import { WORK_END, WORK_START, SLOT_STEP } from "./constants";
-
-type HasSchedule = {
-  shiftStart: number;
-  shiftEnd: number;
-  breakStart: number | null;
-  breakEnd: number | null;
-};
+import type { Employee } from "./types";
 
 export const overlaps = (
   startA: number,
   endA: number,
   startB: number,
   endB: number
-): boolean => Math.max(startA, startB) < Math.min(endA, endB);
+): boolean => {
+  if (endA === startB) {
+    return true;
+  }
+  return Math.max(startA, startB) < Math.min(endA, endB);
+};
 
 export const toHourFloat = (
   value: string | null | undefined
@@ -52,13 +51,27 @@ export const isHalfHour = (value: string): boolean => {
   return mm === 0 || mm === 30;
 };
 
-export const calculateWorkHours = (employee: HasSchedule): number => {
-  const totalShift = employee.shiftEnd - employee.shiftStart;
-  const breakDuration =
-    employee.breakStart !== null && employee.breakEnd !== null
-      ? employee.breakEnd - employee.breakStart
-      : 0;
-  return totalShift - breakDuration;
+export const calculateWorkHours = (employee: Employee): number => {
+  let total = 0;
+
+  if (employee.shift1) {
+    const shift1Hours = employee.shift1.shiftEnd - employee.shift1.shiftStart;
+    console.log(
+      `員工 ${employee.name} 第一段班: ${employee.shift1.shiftStart} - ${employee.shift1.shiftEnd} = ${shift1Hours} 小時`
+    );
+    total += shift1Hours;
+  }
+
+  if (employee.shift2) {
+    const shift2Hours = employee.shift2.shiftEnd - employee.shift2.shiftStart;
+    console.log(
+      `員工 ${employee.name} 第二段班: ${employee.shift2.shiftStart} - ${employee.shift2.shiftEnd} = ${shift2Hours} 小時`
+    );
+    total += shift2Hours;
+  }
+
+  console.log(`員工 ${employee.name} 總工時: ${total} 小時`);
+  return total;
 };
 
 export const formatWorkDuration = (value: number): string => {

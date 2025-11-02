@@ -1,20 +1,23 @@
+export type Shift = {
+  role: string;
+  shiftStart: number;
+  shiftEnd: number;
+};
+
 export type Employee = {
   id: string;
   name: string;
-  role: string;
-  color: string;
-  shiftStart: number;
-  shiftEnd: number;
-  breakStart: number | null;
-  breakEnd: number | null;
+  shift1: Shift | null;
+  shift2: Shift | null;
 };
 
 export type EmployeeFormValues = {
   name: string;
-  role: string;
-  shiftStart: string;
-  shiftEnd: string;
-  breakStart: string;
-  breakEnd: string;
+  shift1Role: string;
+  shift1Start: string;
+  shift1End: string;
+  shift2Role: string;
+  shift2Start: string;
+  shift2End: string;
   root?: string;
 };

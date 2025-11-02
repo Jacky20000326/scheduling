@@ -11,16 +11,12 @@ import {
 import { ROLE_COLOR_OVERRIDES, SLOT_STEP, SLOT_WIDTH_PX } from "../constants";
 import { UseFormClearErrors, UseFormReset } from "react-hook-form";
 
-type CellStatus = "off" | "break" | "work";
-
-type LegendItem = { role: string; color: string };
+type CellStatus = "off" | "work";
 
 interface Props {
   employees: Employee[];
   editingId: string | null;
-  roleColors: Record<string, string>;
   setEmployees: Dispatch<SetStateAction<Employee[]>>;
-  setRoleColors: Dispatch<SetStateAction<Record<string, string>>>;
   setEditingId: Dispatch<SetStateAction<string | null>>;
   handleCancelEdit: () => void;
   reset: UseFormReset<EmployeeFormValues>;
@@ -30,40 +26,18 @@ interface Props {
 export const SchedulingChart = ({
   employees,
   editingId,
-  roleColors,
   setEmployees,
-  setRoleColors,
   setEditingId,
   handleCancelEdit,
   reset,
   clearErrors,
 }: Props) => {
   const handleDeleteClick = (employeeId: string) => {
-    const targetEmployee = employees.find(
-      (employee) => employee.id === employeeId
-    );
     const isEditingCurrent = editingId === employeeId;
 
-    setEmployees((prev) => {
-      const updatedEmployees = prev.filter(
-        (employee) => employee.id !== employeeId
-      );
-
-      if (targetEmployee) {
-        const roleStillUsed = updatedEmployees.some(
-          (employee) => employee.role === targetEmployee.role
-        );
-        if (!roleStillUsed) {
-          setRoleColors((prevColors) => {
-            const updatedColors = { ...prevColors };
-            delete updatedColors[targetEmployee.role];
-            return updatedColors;
-          });
-        }
-      }
-
-      return updatedEmployees;
-    });
+    setEmployees((prev) =>
+      prev.filter((employee) => employee.id !== employeeId)
+    );
 
     if (isEditingCurrent) {
       handleCancelEdit();
@@ -73,38 +47,49 @@ export const SchedulingChart = ({
     setEditingId(employee.id);
     reset({
       name: employee.name,
-      role: employee.role,
-      shiftStart: toTimeInputValue(employee.shiftStart),
-      shiftEnd: toTimeInputValue(employee.shiftEnd),
-      breakStart: toTimeInputValue(employee.breakStart),
-      breakEnd: toTimeInputValue(employee.breakEnd),
+      shift1Role: employee.shift1?.role || "",
+      shift1Start: toTimeInputValue(employee.shift1?.shiftStart),
+      shift1End: toTimeInputValue(employee.shift1?.shiftEnd),
+      shift2Role: employee.shift2?.role || "",
+      shift2Start: toTimeInputValue(employee.shift2?.shiftStart),
+      shift2End: toTimeInputValue(employee.shift2?.shiftEnd),
     });
     clearErrors();
   };
 
-  const renderCell = (employee: Employee, slotStart: number): CellStatus => {
+  const renderCell = (
+    employee: Employee,
+    slotStart: number
+  ): { status: CellStatus; role?: string } => {
     const blockStart = slotStart;
     const blockEnd = slotStart + SLOT_STEP;
-    const withinShift = overlaps(
-      employee.shiftStart,
-      employee.shiftEnd,
-      blockStart,
-      blockEnd
-    );
-
-    if (!withinShift) {
-      return "off";
-    }
-
+    // Check if in shift1
     if (
-      employee.breakStart !== null &&
-      employee.breakEnd !== null &&
-      overlaps(employee.breakStart, employee.breakEnd, blockStart, blockEnd)
+      employee.shift1 &&
+      overlaps(
+        employee.shift1.shiftStart,
+        employee.shift1.shiftEnd,
+        blockStart,
+        blockEnd
+      )
     ) {
-      return "break";
+      return { status: "work", role: employee.shift1.role };
     }
 
-    return "work";
+    // Check if in shift2
+    if (
+      employee.shift2 &&
+      overlaps(
+        employee.shift2.shiftStart,
+        employee.shift2.shiftEnd,
+        blockStart,
+        blockEnd
+      )
+    ) {
+      return { status: "work", role: employee.shift2.role };
+    }
+
+    return { status: "off" };
   };
 
   const hoursGridStyle = useMemo<CSSProperties>(
@@ -157,43 +142,73 @@ export const SchedulingChart = ({
                           type="button"
                           className="chart__action chart__action--edit"
                           onClick={() => handleEditClick(employee)}
+                          title="編輯"
+                          aria-label="編輯員工"
                         >
-                          編輯
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
                         </button>
                         <button
                           type="button"
                           className="chart__action chart__action--delete"
                           onClick={() => handleDeleteClick(employee.id)}
+                          title="刪除"
+                          aria-label="刪除員工"
                         >
-                          刪除
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                          </svg>
                         </button>
                       </div>
                     </div>
-                    <span
-                      className="chart__role"
-                      style={{ backgroundColor: employee.color }}
-                    >
-                      {employee.role}
-                    </span>
+
                     <span className="chart__work-hours">
                       上班 {workHoursLabel}
                     </span>
                   </div>
                   <div className="chart__hours" style={hoursGridStyle}>
                     {TIME_SLOTS.map((slot) => {
-                      const status = renderCell(employee, slot);
-                      const cellStyle = {
-                        "--cell-color": ROLE_COLOR_OVERRIDES[employee.color],
-                      } as CSSProperties;
+                      const cellData = renderCell(employee, slot);
+                      const cellStyle = cellData.role
+                        ? ({
+                            "--cell-color": ROLE_COLOR_OVERRIDES[cellData.role],
+                          } as CSSProperties)
+                        : {};
                       return (
                         <div
                           key={slot}
-                          className={`chart__cell chart__cell--${status}`}
+                          className={`chart__cell chart__cell--${cellData.status}`}
                           style={cellStyle}
                         >
                           <span className="chart__cell-label">
-                            {status === "work" && "上班"}
-                            {status === "break" && "休息"}
+                            {cellData.status === "work"
+                              ? cellData.role
+                              : "休息"}
                           </span>
                         </div>
                       );
