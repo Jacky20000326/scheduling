@@ -21,6 +21,7 @@ interface Props {
   handleCancelEdit: () => void;
   reset: UseFormReset<EmployeeFormValues>;
   clearErrors: UseFormClearErrors<EmployeeFormValues>;
+  onSave: () => void;
 }
 
 export const SchedulingChart = ({
@@ -31,6 +32,7 @@ export const SchedulingChart = ({
   handleCancelEdit,
   reset,
   clearErrors,
+  onSave,
 }: Props) => {
   const handleDeleteClick = (employeeId: string) => {
     const isEditingCurrent = editingId === employeeId;
@@ -224,6 +226,20 @@ export const SchedulingChart = ({
       {employees.length > 0 && (
         <div className="chart__summary">
           當日總工時：{formatWorkDuration(totalWorkHours)}
+        </div>
+      )}
+
+      {employees.length > 0 && (
+        <div className="chart__save-section">
+          <button
+            type="button"
+            className="chart__save-button"
+            onClick={onSave}
+            title="保存排班資料"
+            aria-label="保存排班資料到瀏覽器"
+          >
+            💾 保存排班資料
+          </button>
         </div>
       )}
 

@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { WORK_END, WORK_START } from "./components/constants";
 import { toHourFloat } from "./components/utils";
 import { EditScheduling } from "./components/EditScheduling/EditScheduling";
 import { SchedulingChart } from "./components/Scheduling/SchedulingChart";
 import { Employee, EmployeeFormValues } from "./components/types";
+
+const STORAGE_KEY = "scheduling-employees";
 
 function App() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -30,6 +32,19 @@ function App() {
     },
     mode: "onChange",
   });
+
+  // 從 localStorage 讀取資料
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      if (savedData) {
+        const parsedData = JSON.parse(savedData) as Employee[];
+        setEmployees(parsedData);
+      }
+    } catch (error) {
+      console.error("無法從 localStorage 讀取資料:", error);
+    }
+  }, []);
 
   const onSubmit: SubmitHandler<EmployeeFormValues> = (form) => {
     clearErrors();
@@ -192,6 +207,16 @@ function App() {
     clearErrors();
   };
 
+  const handleSaveToLocalStorage = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
+      alert("排班資料已成功保存！");
+    } catch (error) {
+      console.error("保存資料時發生錯誤:", error);
+      alert("保存失敗，請稍後再試。");
+    }
+  };
+
   return (
     <div className="app">
       <header className="app__header">
@@ -216,6 +241,7 @@ function App() {
           setEditingId={setEditingId}
           reset={reset}
           clearErrors={clearErrors}
+          onSave={handleSaveToLocalStorage}
         />
       </main>
     </div>
