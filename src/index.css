@@ -381,19 +381,9 @@ body {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-}
-
-.chart__save-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.25);
-}
-
-.chart__save-button:active {
-  transform: translateY(0);
 }
 
 .legend ul {

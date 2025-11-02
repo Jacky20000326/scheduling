@@ -229,19 +229,22 @@ export const SchedulingChart = ({
         </div>
       )}
 
-      {employees.length > 0 && (
-        <div className="chart__save-section">
-          <button
-            type="button"
-            className="chart__save-button"
-            onClick={onSave}
-            title="保存排班資料"
-            aria-label="保存排班資料到瀏覽器"
-          >
-            💾 保存排班資料
-          </button>
-        </div>
-      )}
+      <div className="chart__save-section">
+        <button
+          type="button"
+          className="chart__save-button"
+          onClick={onSave}
+          title="保存排班資料"
+          aria-label="保存排班資料到瀏覽器"
+          disabled={employees.length === 0}
+          style={{
+            opacity: employees.length === 0 ? 0.5 : 1,
+            cursor: employees.length === 0 ? "not-allowed" : "pointer",
+          }}
+        >
+          保存排班資料
+        </button>
+      </div>
 
       <div className="legend">
         <h3>工作項目顏色對應</h3>
