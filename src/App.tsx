@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { WORK_END, WORK_START } from "./components/constants";
-import { toHourFloat } from "./components/utils";
+import {
+  toHourFloat,
+  encodeEmployeesToURL,
+  decodeEmployeesFromURL,
+} from "./components/utils";
 import { EditScheduling } from "./components/EditScheduling/EditScheduling";
 import { SchedulingChart } from "./components/Scheduling/SchedulingChart";
 import { Employee, EmployeeFormValues } from "./components/types";
@@ -33,18 +37,48 @@ function App() {
     mode: "onChange",
   });
 
-  // 從 localStorage 讀取資料
+  // 從 URL 或 localStorage 讀取資料（URL 優先）
   useEffect(() => {
     try {
+      // 優先從 URL hash 讀取
+      const hash = window.location.hash;
+      if (hash.startsWith("#data=")) {
+        const encoded = hash.substring(6); // 移除 "#data="
+        const urlData = decodeEmployeesFromURL(encoded);
+        if (urlData) {
+          setEmployees(urlData);
+          return;
+        }
+      }
+
+      // 如果 URL 沒有資料，則從 localStorage 讀取
       const savedData = localStorage.getItem(STORAGE_KEY);
       if (savedData) {
         const parsedData = JSON.parse(savedData) as Employee[];
         setEmployees(parsedData);
       }
     } catch (error) {
-      console.error("無法從 localStorage 讀取資料:", error);
+      console.error("無法讀取資料:", error);
     }
   }, []);
+
+  // 當 employees 改變時，自動同步到 URL
+  useEffect(() => {
+    if (employees.length === 0) {
+      // 如果沒有員工資料，清除 URL hash
+      if (window.location.hash) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
+      return;
+    }
+
+    const encoded = encodeEmployeesToURL(employees);
+    if (encoded) {
+      const newHash = `#data=${encoded}`;
+      // 使用 replaceState 避免產生瀏覽器歷史記錄
+      window.history.replaceState(null, "", newHash);
+    }
+  }, [employees]);
 
   const onSubmit: SubmitHandler<EmployeeFormValues> = (form) => {
     clearErrors();
@@ -210,7 +244,10 @@ function App() {
   const handleSaveToLocalStorage = () => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
-      alert("排班資料已成功保存！");
+      const currentUrl = window.location.href;
+      alert(
+        `排班資料已成功保存！\n\n您可以複製以下網址分享排班表：\n${currentUrl}`
+      );
     } catch (error) {
       console.error("保存資料時發生錯誤:", error);
       alert("保存失敗，請稍後再試。");

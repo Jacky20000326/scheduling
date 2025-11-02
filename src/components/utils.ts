@@ -88,3 +88,63 @@ export const TIME_SLOTS: number[] = Array.from(
   { length: Math.round((WORK_END - WORK_START) / SLOT_STEP) },
   (_, index) => WORK_START + index * SLOT_STEP
 );
+
+/**
+ * 將員工資料編碼為 URL hash 字串
+ * 使用 Base64 編碼確保 URL 安全性，並支援中文字符
+ */
+export const encodeEmployeesToURL = (employees: Employee[]): string => {
+  try {
+    const json = JSON.stringify(employees);
+    // 使用 encodeURIComponent 處理中文字符，然後 base64 編碼
+    const encoded = btoa(encodeURIComponent(json));
+    return encoded;
+  } catch (error) {
+    console.error("編碼資料到 URL 時發生錯誤:", error);
+    return "";
+  }
+};
+
+/**
+ * 從 URL hash 字串解碼員工資料
+ * 包含資料結構驗證，防止惡意或損壞的資料
+ */
+export const decodeEmployeesFromURL = (
+  encoded: string
+): Employee[] | null => {
+  try {
+    if (!encoded || encoded.trim() === "") {
+      return null;
+    }
+    // base64 解碼，然後用 decodeURIComponent 處理中文字符
+    const json = decodeURIComponent(atob(encoded));
+    const employees = JSON.parse(json) as Employee[];
+
+    // 驗證資料格式
+    if (!Array.isArray(employees)) {
+      return null;
+    }
+
+    // 簡單驗證每個員工物件的結構
+    const isValid = employees.every(
+      (emp) =>
+        typeof emp.id === "string" &&
+        typeof emp.name === "string" &&
+        (emp.shift1 === null ||
+          (typeof emp.shift1 === "object" &&
+            typeof emp.shift1.role === "string" &&
+            typeof emp.shift1.shiftStart === "number" &&
+            typeof emp.shift1.shiftEnd === "number")) &&
+        (emp.shift2 === null ||
+          (typeof emp.shift2 === "object" &&
+            typeof emp.shift2.role === "string" &&
+            typeof emp.shift2.shiftStart === "number" &&
+            typeof emp.shift2.shiftEnd === "number"))
+    );
+
+    return isValid ? employees : null;
+  } catch (error) {
+    console.error("從 URL 解碼資料時發生錯誤:", error);
+    return null;
+  }
+};
