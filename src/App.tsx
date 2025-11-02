@@ -8,6 +8,7 @@ import {
 } from "./components/utils";
 import { EditScheduling } from "./components/EditScheduling/EditScheduling";
 import { SchedulingChart } from "./components/Scheduling/SchedulingChart";
+import { SaveSuccessPopup } from "./components/SaveSuccessPopup/SaveSuccessPopup";
 import { Employee, EmployeeFormValues } from "./components/types";
 
 const STORAGE_KEY = "scheduling-employees";
@@ -15,6 +16,8 @@ const STORAGE_KEY = "scheduling-employees";
 function App() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showSavePopup, setShowSavePopup] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   const {
     register,
@@ -245,9 +248,8 @@ function App() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
       const currentUrl = window.location.href;
-      alert(
-        `排班資料已成功保存！\n\n您可以複製以下網址分享排班表：\n${currentUrl}`
-      );
+      setShareUrl(currentUrl);
+      setShowSavePopup(true);
     } catch (error) {
       console.error("保存資料時發生錯誤:", error);
       alert("保存失敗，請稍後再試。");
@@ -281,6 +283,11 @@ function App() {
           onSave={handleSaveToLocalStorage}
         />
       </main>
+      <SaveSuccessPopup
+        isOpen={showSavePopup}
+        onClose={() => setShowSavePopup(false)}
+        shareUrl={shareUrl}
+      />
     </div>
   );
 }
