@@ -260,14 +260,12 @@ body {
   border-color: #6366f1;
   color: #4f46e5;
   background-color: #eef2ff;
-  transform: translateY(-1px);
 }
 
 .chart__action--delete:hover {
   border-color: #ef4444;
   color: #dc2626;
   background-color: #fee2e2;
-  transform: translateY(-1px);
 }
 
 .chart__hours {
