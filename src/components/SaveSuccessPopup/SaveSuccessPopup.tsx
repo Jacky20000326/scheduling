@@ -71,11 +71,11 @@ export const SaveSuccessPopup = ({
           </svg>
         </div>
 
-        <h2 className={styles.title}>保存成功！</h2>
+        <h2 className={styles.title}>分享排班表</h2>
         <p className={styles.description}>
-          您的排班資料已成功保存到本地存儲。
+          您的排班資料已自動保存到網址列中。
           <br />
-          您可以複製以下網址分享排班表給其他人：
+          複製以下網址即可分享排班表給其他人：
         </p>
 
         <div className={styles.urlContainer}>

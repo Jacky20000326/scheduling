@@ -11,8 +11,6 @@ import { SchedulingChart } from "./components/Scheduling/SchedulingChart";
 import { SaveSuccessPopup } from "./components/SaveSuccessPopup/SaveSuccessPopup";
 import { Employee, EmployeeFormValues } from "./components/types";
 
-const STORAGE_KEY = "scheduling-employees";
-
 function App() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -40,28 +38,19 @@ function App() {
     mode: "onChange",
   });
 
-  // 從 URL 或 localStorage 讀取資料（URL 優先）
+  // 從 URL 讀取資料
   useEffect(() => {
     try {
-      // 優先從 URL hash 讀取
       const hash = window.location.hash;
       if (hash.startsWith("#data=")) {
         const encoded = hash.substring(6); // 移除 "#data="
         const urlData = decodeEmployeesFromURL(encoded);
         if (urlData) {
           setEmployees(urlData);
-          return;
         }
       }
-
-      // 如果 URL 沒有資料，則從 localStorage 讀取
-      const savedData = localStorage.getItem(STORAGE_KEY);
-      if (savedData) {
-        const parsedData = JSON.parse(savedData) as Employee[];
-        setEmployees(parsedData);
-      }
     } catch (error) {
-      console.error("無法讀取資料:", error);
+      console.error("無法從 URL 讀取資料:", error);
     }
   }, []);
 
@@ -244,16 +233,10 @@ function App() {
     clearErrors();
   };
 
-  const handleSaveToLocalStorage = () => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
-      const currentUrl = window.location.href;
-      setShareUrl(currentUrl);
-      setShowSavePopup(true);
-    } catch (error) {
-      console.error("保存資料時發生錯誤:", error);
-      alert("保存失敗，請稍後再試。");
-    }
+  const handleShowSharePopup = () => {
+    const currentUrl = window.location.href;
+    setShareUrl(currentUrl);
+    setShowSavePopup(true);
   };
 
   return (
@@ -280,7 +263,7 @@ function App() {
           setEditingId={setEditingId}
           reset={reset}
           clearErrors={clearErrors}
-          onSave={handleSaveToLocalStorage}
+          onSave={handleShowSharePopup}
         />
       </main>
       <SaveSuccessPopup

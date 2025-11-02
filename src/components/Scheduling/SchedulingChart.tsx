@@ -234,15 +234,15 @@ export const SchedulingChart = ({
           type="button"
           className="chart__save-button"
           onClick={onSave}
-          title="保存排班資料"
-          aria-label="保存排班資料到瀏覽器"
+          title="分享排班表"
+          aria-label="取得分享連結"
           disabled={employees.length === 0}
           style={{
             opacity: employees.length === 0 ? 0.5 : 1,
             cursor: employees.length === 0 ? "not-allowed" : "pointer",
           }}
         >
-          保存排班資料
+          分享排班表
         </button>
       </div>
 
