@@ -13,7 +13,7 @@ import { isHalfHour } from "../utils";
 import { FROM_REGISTER_NAME } from "../constants";
 import { EmployeeFormValues } from "../types";
 
-const ROLE_OPTIONS = ["客服", "菜口", "跑菜", "內場", "外場"];
+const ROLE_OPTIONS = ["吧台", "菜口", "跑菜", "內場", "外場"];
 
 type EditEmployeeProps = {
   register: UseFormRegister<EmployeeFormValues>;

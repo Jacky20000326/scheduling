@@ -24,7 +24,7 @@ export const COLOR_PALETTE = [
 export const ROLE_COLOR_OVERRIDES: Record<string, string> = {
   菜口: "#1d4ed8",
   跑菜: "#60a5fa",
-  客服: "#FB7185",
+  吧台: "#FB7185",
   內場: "#D946EF",
   外場: "#E11D48",
 };
